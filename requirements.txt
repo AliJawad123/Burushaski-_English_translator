@@ -1,2 +1,2 @@
 google-api-python-client
-streamlit google-generativeai
+google-generativeai
