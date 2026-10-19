@@ -248,7 +248,7 @@ if not st.session_state.opened:
 
     _, button_col, _ = st.columns([1, 1, 1])
     with button_col:
-        if st.button("♡  A  ♡", use_container_width=True):
+        if st.button("♡  Click here Meenu  ♡", use_container_width=True):
             st.session_state.opened = True
             st.balloons()
             st.rerun()
