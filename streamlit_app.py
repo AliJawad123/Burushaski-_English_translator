@@ -15,7 +15,7 @@ st.set_page_config(
 # LOAD API KEY SECURELY
 # ==========================================================
 try:
-    HF_TOKEN = st.secrets["HF_TOKEN"]
+    HF_TOKEN = st.secrets["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"]
 except Exception:
     st.error("HF_TOKEN not found in Streamlit secrets.")
     st.stop()
