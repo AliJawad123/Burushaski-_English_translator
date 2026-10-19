@@ -1,5 +1,6 @@
+
 import streamlit as st
-import google.generativeai as genai
+from openai import OpenAI
 
 # ==========================================================
 # PAGE CONFIG
@@ -14,20 +15,20 @@ st.set_page_config(
 # LOAD API KEY SECURELY
 # ==========================================================
 try:
-    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    HF_TOKEN = st.secrets["HF_TOKEN"]
 except Exception:
-    st.error("❌ GEMINI_API_KEY not found in Streamlit secrets.")
+    st.error("HF_TOKEN not found in Streamlit secrets.")
     st.stop()
 
 # ==========================================================
-# CONFIGURE GEMINI
+# CONFIGURE GPT-OSS-120B
 # ==========================================================
-try:
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-2.5-flash")
-except Exception as e:
-    st.error(f"❌ Failed to initialize Gemini: {e}")
-    st.stop()
+client = OpenAI(
+    base_url="https://router.huggingface.co/v1",
+    api_key=HF_TOKEN
+)
+
+MODEL = "openai/gpt-oss-120b:fastest"
 
 # ==========================================================
 # BURUSHASKI EXAMPLES
@@ -66,32 +67,50 @@ Khulto → Today
 # TRANSLATION FUNCTION
 # ==========================================================
 def translate(text: str) -> str:
-    prompt = f"""
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {
+                "role": "system",
+                "content": f"""
 You are a Roman Burushaski to English translator.
 
-Use the examples below:
+Use these examples as translation references:
 
 {EXAMPLES}
 
 Rules:
-- Translate accurately into English
-- Return ONLY translation
-- No explanation
-
-Input:
-{text}
-
-Output:
+- Translate the input accurately into English.
+- Use the examples to understand the vocabulary and patterns.
+- Preserve the original meaning and tense.
+- Do not invent meanings when uncertain.
+- Return only the English translation.
+- Do not provide explanations or notes.
 """
+            },
+            {
+                "role": "user",
+                "content": text
+            }
+        ],
+        temperature=0.2,
+        max_tokens=300
+    )
 
-    response = model.generate_content(prompt)
-    return response.text.strip()
+    result = response.choices[0].message.content
+
+    if not result:
+        raise ValueError("The model returned an empty response.")
+
+    return result.strip()
+
 
 # ==========================================================
 # UI
 # ==========================================================
 st.title("🌍 Burushaski → English Translator")
-st.write("Translate Roman Burushaski sentences using Gemini AI")
+st.write("Translate Roman Burushaski sentences using GPT-OSS AI")
 
 user_text = st.text_area(
     "Enter Burushaski Text",
@@ -103,10 +122,12 @@ if st.button("Translate", use_container_width=True):
 
     if not user_text.strip():
         st.warning("Please enter text first.")
+
     else:
         with st.spinner("Translating..."):
             try:
                 result = translate(user_text)
+
                 st.success("Translation Complete")
                 st.subheader("English Translation")
                 st.write(result)
@@ -114,8 +135,9 @@ if st.button("Translate", use_container_width=True):
             except Exception as e:
                 st.error(f"Translation failed: {e}")
 
+
 # ==========================================================
 # FOOTER
 # ==========================================================
 st.markdown("---")
-st.caption("Built with Streamlit + Gemini AI")
+st.caption("Built with Streamlit + GPT-OSS-120B")
