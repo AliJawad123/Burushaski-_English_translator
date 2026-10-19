@@ -12,7 +12,7 @@ st.set_page_config(
 
 # ---------------- PERSONAL DETAILS ----------------
 YOUR_NAME = "Jawad"
-HER_NAME = "My Daltas Jasmine"
+HER_NAME = "Daltas Jasmine"
 ANNIVERSARY_DATE = "19 October 2026"
 
 LOVE_LETTER = """
@@ -28,14 +28,13 @@ I may not always find the perfect words to describe
 my feelings, but I hope I can spend a lifetime
 showing you how much you mean to me.
 
-
 Thank you for being part of my story.
 I cannot wait to write the rest of it with you.
 
 Six months down, a lifetime to go.
 
 Forever yours,
-Jawad Ali ♡
+Jawad ♡
 """
 
 REASONS = [
@@ -265,8 +264,8 @@ st.markdown(f"""
 <div class="hero">
     <div class="flower">🌸</div>
     <div class="small-text">HAPPY HALF-YEAR ANNIVERSARY</div>
-    <div class="script">Happy Six Months My Sweet Jasmine!</div>
-    
+    <div class="script">Happy Six Months!</div>
+    <div class="subtitle">My dearest {html.escape(HER_NAME)} ♡</div>
     <br>
     <p class="small-text">
         Six months of us, countless little memories,<br>
